@@ -27,4 +27,31 @@
     </filter-mapping>
 
 
+    <filter>
+        <filter-name>CommandAccessFilter</filter-name>
+        <filter-class>ua.nure.cherkashyn.hotel.web.filter.CommandAccessFilter</filter-class>
+        <init-param>
+            <param-name>manager</param-name>
+            <param-value>listOrders</param-value>
+        </init-param>
+        <init-param>
+            <param-name>client</param-name>
+            <param-value>listMenu</param-value>
+        </init-param>
+        <init-param>
+            <param-name>common</param-name>
+            <param-value>logout noCommand viewSettings</param-value>
+        </init-param>
+        <init-param>
+            <param-name>out-of-control</param-name>
+            <param-value>login</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CommandAccessFilter</filter-name>
+        <url-pattern>/controller</url-pattern>
+    </filter-mapping>
+
+
 </web-app>

@@ -39,6 +39,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
@@ -54,6 +57,7 @@
     </option>
   </component>
   <component name="ProjectId" id="1ZLs0SIc7n9ceB3FFa0ds5v6Bo7" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -64,7 +68,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/hotel_ru.properties" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/FinalProject-IDEA-MySQL" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -209,7 +213,7 @@
       <workItem from="1584925332045" duration="8065000" />
       <workItem from="1584934909900" duration="103484000" />
       <workItem from="1587986119925" duration="2448000" />
-      <workItem from="1588024094113" duration="145083000" />
+      <workItem from="1588024094113" duration="146205000" />
     </task>
     <servers />
   </component>
@@ -237,10 +241,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585012343683" />
-    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1588641660487">
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1588661807844">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1588641660487" />
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1588661807844" />
     <state x="640" y="256" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1588023731633">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -257,10 +261,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="703" y="382" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1584934680295" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588661189530">
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588661881588">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588661189530" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588661881588" />
     <state width="1293" height="230" key="GridCell.Tab.0.bottom" timestamp="1588655062204">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
