@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 
-<fmt:setLocale value="${sessionScope.locale}" />
-<fmt:setBundle basename="hotel" />
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="hotel"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,43 +24,46 @@
             <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
-                <fmt:message key = "language"/>
+                <fmt:message key="language"/>
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="<c:url value="/controller?command=changeLocale&newLocale=ru&linkToForward=login"></c:url>"><fmt:message key = "russian"/></a>
-                <a class="dropdown-item" href="<c:url value="/controller?command=changeLocale&newLocale=en&linkToForward=login"></c:url>"><fmt:message key = "english"/></a>
+                <a class="dropdown-item"
+                   href="<c:url value="/controller?command=changeLocale&newLocale=ru&linkToForward=login"></c:url>"><fmt:message
+                        key="russian"/></a>
+                <a class="dropdown-item"
+                   href="<c:url value="/controller?command=changeLocale&newLocale=en&linkToForward=login"></c:url>"><fmt:message
+                        key="english"/></a>
             </div>
         </div>
     </div>
     <div class="FormWrapper">
         <div class="FormNav">
-            <button type="button" class="btn btn-active" id="SignIn"><fmt:message key = "signIn"/></button>
-            <button type="button" class="btn btn-info" id="SignUp"><fmt:message key = "signUp"/></button>
-            <button type="button" class="btn btn-info" id="ForgetPassword"><fmt:message key = "forgetPassword"/></button>
+            <button type="button" class="btn btn-active" id="SignIn"><fmt:message key="signIn"/></button>
+            <button type="button" class="btn btn-info" id="SignUp"><fmt:message key="signUp"/></button>
+            <button type="button" class="btn btn-info" id="ForgetPassword"><fmt:message key="forgetPassword"/></button>
         </div>
         <div class="SignInForm FormActive">
             <form>
                 <div class="form-group row">
-                    <label for="SingInEmail" class="col-sm-12 col-form-label"><fmt:message key = "email"/></label>
+                    <label for="SingInEmail" class="col-sm-12 col-form-label"><fmt:message key="email"/></label>
                     <div class="col-sm-12">
-                        <input type="email" class="form-control" id="SingInEmail" placeholder="<fmt:message key = "email"/>">
+                        <input type="email" class="form-control" id="SingInEmail"
+                               placeholder="<fmt:message key = "email"/>">
                     </div>
-                    <div class="valid-feedback col-sm-12" id="emailSingInFeedback">
-                        Looks good!
-                    </div>
+                    <div class="valid-feedback col-sm-12" id="emailSingInFeedback"></div>
                 </div>
                 <div class="form-group row">
-                    <label for="SingInPassword" class="col-sm-12 col-form-label"><fmt:message key = "password"/></label>
+                    <label for="SingInPassword" class="col-sm-12 col-form-label"><fmt:message key="password"/></label>
                     <div class="col-sm-12">
-                        <input type="password" class="form-control" id="SingInPassword" placeholder="<fmt:message key = "password"/>">
+                        <input type="password" class="form-control" id="SingInPassword"
+                               placeholder="<fmt:message key = "password"/>">
                     </div>
-                    <div class="valid-feedback" id="passwordSingInFeedback">
-                        Looks good!
-                    </div>
+                    <div class="valid-feedback" id="passwordSingInFeedback"></div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary" id="SignInBtn"><fmt:message key = "signIn"/></button>
+                        <button type="submit" class="btn btn-primary" id="SignInBtn"><fmt:message
+                                key="signIn"/></button>
                     </div>
                 </div>
             </form>
@@ -68,26 +71,25 @@
         <div class="SignUpForm">
             <form>
                 <div class="form-group row">
-                    <label for="SingUpEmail" class="col-sm-12 col-form-label"><fmt:message key = "email"/></label>
+                    <label for="SingUpEmail" class="col-sm-12 col-form-label"><fmt:message key="email"/></label>
                     <div class="col-sm-12">
-                        <input type="email" class="form-control" id="SingUpEmail" placeholder="<fmt:message key = "email"/>">
+                        <input type="email" class="form-control" id="SingUpEmail"
+                               placeholder="<fmt:message key = "email"/>">
                     </div>
-                    <div class="valid-feedback" id="emailSingUpFeedback">
-                        Looks good!
-                    </div>
+                    <div class="valid-feedback" id="emailSingUpFeedback"></div>
                 </div>
                 <div class="form-group row">
-                    <label for="SingUpPassword" class="col-sm-12 col-form-label"><fmt:message key = "password"/></label>
+                    <label for="SingUpPassword" class="col-sm-12 col-form-label"><fmt:message key="password"/></label>
                     <div class="col-sm-12">
-                        <input type="password" class="form-control" id="SingUpPassword" placeholder="<fmt:message key = "password"/>">
+                        <input type="password" class="form-control" id="SingUpPassword"
+                               placeholder="<fmt:message key = "password"/>">
                     </div>
-                    <div class="valid-feedback" id="passwordSingUpFeedback">
-                        Looks good!
-                    </div>
+                    <div class="valid-feedback" id="passwordSingUpFeedback"></div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary" id="SignUpBtn"><fmt:message key = "signUp"/></button>
+                        <button type="submit" class="btn btn-primary" id="SignUpBtn"><fmt:message
+                                key="signUp"/></button>
                     </div>
                 </div>
             </form>
@@ -95,17 +97,17 @@
         <div class="ForgetPasswordForm">
             <form>
                 <div class="form-group row">
-                    <label for="ForgetPasswordEmail" class="col-sm-12 col-form-label"><fmt:message key = "email"/></label>
+                    <label for="ForgetPasswordEmail" class="col-sm-12 col-form-label"><fmt:message key="email"/></label>
                     <div class="col-sm-12">
-                        <input type="email" class="form-control" id="ForgetPasswordEmail" placeholder="<fmt:message key = "email"/>">
+                        <input type="email" class="form-control" id="ForgetPasswordEmail"
+                               placeholder="<fmt:message key = "email"/>">
                     </div>
-                    <div class="valid-feedback" id="forgetPasswordFeedback">
-                        Looks good!
-                    </div>
+                    <div class="valid-feedback" id="forgetPasswordFeedback"></div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary" id="ForgetPasswordBtn"><fmt:message key = "send"/></button>
+                        <button type="submit" class="btn btn-primary" id="ForgetPasswordBtn"><fmt:message
+                                key="send"/></button>
                     </div>
                 </div>
             </form>

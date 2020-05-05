@@ -6,9 +6,8 @@
 </head>
 <body>
 this is error page
-${requestScope.approvedToken}
-<c:if test="${not empty requestScope.approvedToken}">
-    ${requestScope.approvedToken}
+<c:if test="${not empty requestScope.errorMessage}">
+    ${requestScope.errorMessage}
 </c:if>
 </body>
 </html>

@@ -62,7 +62,6 @@ public class AuthenticationService extends HttpServlet {
     @Override
     public void init() {
         gson = new GsonBuilder().disableHtmlEscaping().create();
-        ;
     }
 
 
@@ -133,7 +132,8 @@ public class AuthenticationService extends HttpServlet {
      * @return AuthorizationChecker messages to user.
      */
     private AuthenticationChecker authorizeUser(String email, String password, HttpServletRequest req) {
-        AuthenticationChecker checker = checkFieldsOnValid(email, password);
+        ResourceBundle bundle = getI18NBundle(req);
+        AuthenticationChecker checker = checkFieldsOnValid(email, password, req);
         HttpSession session = req.getSession();
         try {
 
@@ -145,8 +145,8 @@ public class AuthenticationService extends HttpServlet {
             if (user == null) {
                 checker.setEmailValid(false);
                 checker.setPasswordValid(false);
-                checker.setEmailMessage(ServiceConstants.AUTHORIZE_USER_NOT_FOUND_IN_DATABASE_EMAIL);
-                checker.setPasswordMessage(ServiceConstants.AUTHORIZE_USER_NOT_FOUND_IN_DATABASE_PASSWORD);
+                checker.setEmailMessage(bundle.getString("authorizeUserNotFoundInDataBaseEmail"));
+                checker.setPasswordMessage(bundle.getString("authorizeUserNotFoundInDataBasePassword"));
                 return checker;
             }
 
@@ -161,10 +161,9 @@ public class AuthenticationService extends HttpServlet {
                 LOG.trace("User ==> " + user.getEmail() + "singed in as ==>" + role.getName());
             } else {
                 checker.setPasswordValid(false);
-                checker.setEmailMessage(ServiceConstants.AUTHORIZE_EMAIL_OK);
-                checker.setPasswordMessage(ServiceConstants.AUTHORIZE_PASSWORD_INVALID);
+                checker.setEmailMessage(bundle.getString("authorizeEmailOk"));
+                checker.setPasswordMessage(bundle.getString("authorizePasswordInvalid"));
             }
-
         } catch (DBException e) {
             checker.setError(true);
         }
@@ -186,7 +185,7 @@ public class AuthenticationService extends HttpServlet {
 
         ResourceBundle bundle = getI18NBundle(req);
 
-        AuthenticationChecker checker = checkFieldsOnValid(email, password);
+        AuthenticationChecker checker = checkFieldsOnValid(email, password, req);
         try {
 
             UserDAO dao = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getUserDAO();
@@ -228,11 +227,12 @@ public class AuthenticationService extends HttpServlet {
      * @return AuthorizationChecker messages to user.
      */
     private AuthenticationChecker recoveryPassword(String email, HttpServletRequest req) {
+        ResourceBundle bundle = getI18NBundle(req);
         AuthenticationChecker checker = new AuthenticationChecker();
         try {
             if (!isEmailValid(email)) {
                 checker.setEmailValid(false);
-                checker.setEmailMessage(ServiceConstants.EMAIL_INVALID);
+                checker.setEmailMessage(bundle.getString("emailInvalid"));
                 return checker;
             }
 
@@ -240,12 +240,12 @@ public class AuthenticationService extends HttpServlet {
             User user = dao.findApprovedUserByEmail(email);
 
             if (user != null) {
-                checker.setEmailMessage(ServiceConstants.RECOVERY_SUCCESS);
+                checker.setEmailMessage(bundle.getString("recoverySuccess"));
                 dao.updateApprovedToken(user, getApprovedToken(email));
                 new Thread(() -> sendRecoveryPasswordMail(email)).start();
             } else {
                 checker.setEmailValid(false);
-                checker.setEmailMessage(ServiceConstants.RECOVERY_FAIL);
+                checker.setEmailMessage(bundle.getString("recoveryFail"));
             }
 
         } catch (DBException e) {
@@ -265,17 +265,18 @@ public class AuthenticationService extends HttpServlet {
      * @param req              HttpServletRequest
      */
     private AuthenticationChecker exchangePassword(String approvedToken, String password, String repeatedPassword, HttpServletRequest req) {
+        ResourceBundle bundle = getI18NBundle(req);
         AuthenticationChecker checker = new AuthenticationChecker();
         try {
             if (!(isPasswordValid(password) && isPasswordValid(repeatedPassword))) {
                 checker.setPasswordValid(false);
-                checker.setPasswordMessage(ServiceConstants.EXCHANGE_PASSWORD_NOT_VALID);
+                checker.setPasswordMessage(bundle.getString("exchangePasswordsNotValid"));
                 return checker;
             }
 
             if (!password.equals(repeatedPassword)) {
                 checker.setPasswordValid(false);
-                checker.setPasswordMessage(ServiceConstants.EXCHANGE_PASSWORDS_NOT_EQUAL);
+                checker.setPasswordMessage(bundle.getString("exchangePasswordsNotEqual"));
                 return checker;
             }
 
@@ -289,7 +290,7 @@ public class AuthenticationService extends HttpServlet {
                         replace(req.getRequestURI(), "/hotel/" + WebPath.COMMAND_RECOVERY_HELPER));
             } else {
                 checker.setPasswordValid(false);
-                checker.setPasswordMessage(ServiceConstants.EXCHANGE_USER_WITH_APPROVED_TOKEN_NOT_FOUND);
+                checker.setPasswordMessage(bundle.getString("exchangeUserWithApprovedTokenNotFound"));
             }
 
         } catch (DBException e) {
@@ -308,17 +309,18 @@ public class AuthenticationService extends HttpServlet {
      * @param password user password
      * @return AuthorizationChecker messages to user.
      */
-    private AuthenticationChecker checkFieldsOnValid(String email, String password) {
+    private AuthenticationChecker checkFieldsOnValid(String email, String password, HttpServletRequest req) {
+        ResourceBundle bundle = getI18NBundle(req);
         AuthenticationChecker checker = new AuthenticationChecker();
-        checker.setEmailMessage(ServiceConstants.EMAIL_OK);
-        checker.setPasswordMessage(ServiceConstants.PASSWORD_OK);
+        checker.setEmailMessage(bundle.getString("authorizeEmailOk"));
+        checker.setPasswordMessage(bundle.getString("passwordOk"));
         if (!isEmailValid(email)) {
             checker.setEmailValid(false);
-            checker.setEmailMessage(ServiceConstants.EMAIL_INVALID);
+            checker.setEmailMessage(bundle.getString("emailInvalid"));
         }
         if (!isPasswordValid(password)) {
             checker.setPasswordValid(false);
-            checker.setPasswordMessage(ServiceConstants.PASSWORD_INVALID);
+            checker.setPasswordMessage(bundle.getString("passwordInvalid"));
         }
         return checker;
     }
@@ -411,8 +413,6 @@ public class AuthenticationService extends HttpServlet {
     private ResourceBundle getI18NBundle(HttpServletRequest req) {
         Locale locale = Locale.forLanguageTag((String) req.getSession().getAttribute("locale"));
         ResourceBundle bundle = ResourceBundle.getBundle("hotel", locale);
-        LOG.debug(bundle.getString("registerSuccess"));
-        LOG.debug(bundle.getString("luxury"));
         return bundle;
     }
 
