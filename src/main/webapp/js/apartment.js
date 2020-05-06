@@ -119,7 +119,7 @@ window.onload = function(){
                 $("#ModalBody").text(result.message);
                 var f =new Function (result.js);
                 f();
-
+                ajaxGetApartments(slide1, slide2,0);
             },
             error: function (result) {
 

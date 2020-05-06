@@ -51,60 +51,41 @@ public class BookService extends HttpServlet {
         Booking booking = new Booking();
         User user = (User) req.getSession().getAttribute("user");
 
-        if (user == null) {
-            bookingServiceEntity.setTitle("Ошибка");
-            bookingServiceEntity.setMessage("Необходимо войти в систему");
-            bookingServiceEntity.setError(true);
-        } else {
+
+        if (!checkUserOnNull(bookingServiceEntity, user)) {
 
             try {
                 arrivalDate = LocalDate.parse(req.getParameter(("arrivalDate")));
                 departureDate = LocalDate.parse(req.getParameter(("departureDate")));
                 apartmentId = Long.parseLong(req.getParameter("apartmentId"));
             } catch (DateTimeParseException e) {
-                bookingServiceEntity.setTitle("Ошибка");
-                bookingServiceEntity.setMessage("Поля даты заезда и выезда не заполнены");
-                bookingServiceEntity.setError(true);
+                setDataParseError(bookingServiceEntity);
             }
 
-            if (arrivalDate.compareTo(departureDate) > 0) {
-                bookingServiceEntity.setTitle("Ошибка");
-                bookingServiceEntity.setMessage("Дата заезда не может быть раньше даты выезда");
-                req.setAttribute("message", "Дата заезда не может быть раньше даты выезда");
-                bookingServiceEntity.setError(true);
-            } else if (arrivalDate.compareTo(departureDate) == 0) {
-                bookingServiceEntity.setTitle("Ошибка");
-                bookingServiceEntity.setMessage("Дата заезда не может быть равна дате выезда");
-                bookingServiceEntity.setError(true);
-            } else if (bookingDate.compareTo(arrivalDate) >= 0) {
-                bookingServiceEntity.setTitle("Ошибка");
-                bookingServiceEntity.setMessage("Дата заезда не может быть раньше чем завтра");
-                bookingServiceEntity.setError(true);
-            }
-
+            checkDatesOnError(bookingServiceEntity, arrivalDate, departureDate, bookingDate);
 
             if (!bookingServiceEntity.isError()) {
-                booking.setBookingDate(bookingDate);
-                booking.setArrivalDate(arrivalDate);
-                booking.setDepartureDate(departureDate);
-                booking.setApartmentId(apartmentId);
-                booking.setUserId(user.getId());
+
+                setBookingFields(user, booking, bookingDate, arrivalDate, departureDate, apartmentId);
 
                 BookingDAO dao = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getBookingDAO();
 
                 try {
                     dao.makeBooking(booking);
-                    bookingServiceEntity.setTitle("ОК");
-                    bookingServiceEntity.setMessage("Бронирование успешно выполнено");
-
+                    setSuccessfulBooking(bookingServiceEntity);
                 } catch (DBException e) {
-
+                    LOG.error("er");
                 }
             }
 
         }
 
 
+        sendJson(bookingServiceEntity, resp);
+    }
+
+
+    private void sendJson(BookingServiceEntity bookingServiceEntity, HttpServletResponse resp) throws IOException {
         String checkerJson = gson.toJson(bookingServiceEntity);
         OutputStream out = resp.getOutputStream();
         resp.setContentType("application/json");
@@ -112,8 +93,54 @@ public class BookService extends HttpServlet {
         byte[] utf8JsonString = checkerJson.getBytes("UTF8");
         out.write(utf8JsonString, 0, utf8JsonString.length);
         out.flush();
-        LOG.debug("6");
     }
 
+
+    private void setDataParseError(BookingServiceEntity bookingServiceEntity) {
+        bookingServiceEntity.setTitle("Ошибка");
+        bookingServiceEntity.setMessage("Поля даты заезда и выезда не заполнены");
+        bookingServiceEntity.setError(true);
+    }
+
+    private void setSuccessfulBooking(BookingServiceEntity bookingServiceEntity) {
+        bookingServiceEntity.setTitle("ОК");
+        bookingServiceEntity.setMessage("Бронирование успешно выполнено");
+    }
+
+
+    private void setBookingFields(User user, Booking booking, LocalDate bookingDate, LocalDate arrivalDate, LocalDate departureDate, long apartmentId) {
+        booking.setBookingDate(bookingDate);
+        booking.setArrivalDate(arrivalDate);
+        booking.setDepartureDate(departureDate);
+        booking.setApartmentId(apartmentId);
+        booking.setUserId(user.getId());
+    }
+
+    private void checkDatesOnError(BookingServiceEntity bookingServiceEntity, LocalDate arrivalDate, LocalDate departureDate, LocalDate bookingDate) {
+        if (arrivalDate.compareTo(departureDate) > 0) {
+            bookingServiceEntity.setTitle("Ошибка");
+            bookingServiceEntity.setMessage("Дата заезда не может быть раньше даты выезда");
+            bookingServiceEntity.setError(true);
+        } else if (arrivalDate.compareTo(departureDate) == 0) {
+            bookingServiceEntity.setTitle("Ошибка");
+            bookingServiceEntity.setMessage("Дата заезда не может быть равна дате выезда");
+            bookingServiceEntity.setError(true);
+        } else if (bookingDate.compareTo(arrivalDate) >= 0) {
+            bookingServiceEntity.setTitle("Ошибка");
+            bookingServiceEntity.setMessage("Дата заезда не может быть раньше чем завтра");
+            bookingServiceEntity.setError(true);
+        }
+    }
+
+
+    private boolean checkUserOnNull(BookingServiceEntity bookingServiceEntity, User user) {
+        if (user == null) {
+            bookingServiceEntity.setTitle("Ошибка");
+            bookingServiceEntity.setMessage("Необходимо войти в систему");
+            bookingServiceEntity.setError(true);
+            return true;
+        }
+        return false;
+    }
 
 }

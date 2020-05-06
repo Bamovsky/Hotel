@@ -23,6 +23,10 @@ public class ContextListener implements ServletContextListener {
 
     }
 
+
+    /**
+     * User.timezone for correct data connected to needed region
+     */
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
         System.setProperty("user.timezone", "Europe/Kiev");

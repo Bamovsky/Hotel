@@ -18,6 +18,8 @@ import java.util.TreeMap;
  */
 public class ChangeLocaleCommand extends Command {
 
+    private static final long serialVersionUID = -789738080049386757L;
+
     private static final Logger LOG = Logger.getLogger(ChangeLocaleCommand.class);
 
     private static Map<String, String> links = new TreeMap<>();
@@ -30,8 +32,6 @@ public class ChangeLocaleCommand extends Command {
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
-
-        LOG.debug("#exucte ChangeLocaleCommand");
 
         String newLocale;
         String linkToForward;

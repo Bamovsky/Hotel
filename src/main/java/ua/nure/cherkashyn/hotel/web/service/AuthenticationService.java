@@ -134,6 +134,7 @@ public class AuthenticationService extends HttpServlet {
     private AuthenticationChecker authorizeUser(String email, String password, HttpServletRequest req) {
         ResourceBundle bundle = getI18NBundle(req);
         AuthenticationChecker checker = checkFieldsOnValid(email, password, req);
+        LOG.debug("here");
         HttpSession session = req.getSession();
         try {
 

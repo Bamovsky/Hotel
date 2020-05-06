@@ -41,17 +41,17 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
     private static final String SQL_GET_I18N_APARTMENT_STATUS = "SELECT statusName from translationStatus where status_id =? and language_id = (select id from language where name = ?)";
     private static final String SQL_GET_I18N_APARTMENT_CLASS = "SELECT className from translationClass where class_id =? and language_id = (select id from language where name = ?)";
 
-    private static final String SQL_GET_BOOKED_APARTMENTS_WITH_PARAMS_DESC = "SELECT distinct apartment.id, apartment.shortDescription, apartment.description, apartment.price, apartment.quantityOfRooms ,apartment.img ,apartment.class_id FROM apartment, booking WHERE apartment.id = booking.apartment_id and booking.status_id=1 and booking.arrivalDate >= ? and booking.departureDate <=? and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? ORDER BY apartment.price DESC LIMIT ?, ?;";
-    private static final String SQL_GET_BOOKED_APARTMENTS_WITH_PARAMS_ASC = "SELECT distinct apartment.id, apartment.shortDescription, apartment.description, apartment.price, apartment.quantityOfRooms ,apartment.img ,apartment.class_id FROM apartment, booking WHERE apartment.id = booking.apartment_id and booking.status_id=1 and booking.arrivalDate >= ? and booking.departureDate <=? and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? ORDER BY apartment.price ASC LIMIT ?, ?;";
-    private static final String SQL_GET_QUANTITY_OF_BOOKED_APARTMENTS = "SELECT distinct COUNT(apartment.id) FROM apartment, booking WHERE apartment.id = booking.apartment_id and booking.status_id=1 and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? and booking.arrivalDate >= ? and booking.departureDate <=?;";
+    private static final String SQL_GET_BOOKED_APARTMENTS_WITH_PARAMS_DESC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 1) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price DESC LIMIT ?, ?";
+    private static final String SQL_GET_BOOKED_APARTMENTS_WITH_PARAMS_ASC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 1) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price ASC LIMIT ?, ?";
+    private static final String SQL_GET_QUANTITY_OF_BOOKED_APARTMENTS = "Select COUNT(id) from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 1) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=?";
 
-    private static final String SQL_GET_OCCUPIED_APARTMENTS_WITH_PARAMS_DESC = "SELECT distinct apartment.id, apartment.shortDescription, apartment.description, apartment.price, apartment.quantityOfRooms ,apartment.img ,apartment.class_id FROM apartment, booking WHERE apartment.id = booking.apartment_id and booking.status_id=2 and booking.arrivalDate >= ? and booking.departureDate <=? and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? ORDER BY apartment.price DESC LIMIT ?, ?;";
-    private static final String SQL_GET_OCCUPIED_APARTMENTS_WITH_PARAMS_ASC = "SELECT distinct apartment.id, apartment.shortDescription, apartment.description, apartment.price, apartment.quantityOfRooms ,apartment.img ,apartment.class_id FROM apartment, booking WHERE apartment.id = booking.apartment_id and booking.status_id=2 and booking.arrivalDate >= ? and booking.departureDate <=? and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? ORDER BY apartment.price ASC LIMIT ?, ?;";
-    private static final String SQL_GET_QUANTITY_OF_OCCUPIED_APARTMENTS = "SELECT distinct COUNT(apartment.id) FROM apartment, booking WHERE apartment.id = booking.apartment_id and booking.status_id=2 and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? and booking.arrivalDate >= ? and booking.departureDate <=?;";
+    private static final String SQL_GET_OCCUPIED_APARTMENTS_WITH_PARAMS_DESC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 2) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price DESC LIMIT ?, ?";
+    private static final String SQL_GET_OCCUPIED_APARTMENTS_WITH_PARAMS_ASC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 2) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price ASC LIMIT ?, ?";
+    private static final String SQL_GET_QUANTITY_OF_OCCUPIED_APARTMENTS = "Select COUNT(id) from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 2) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=?";
 
-    private static final String SQL_GET_FREE_APARTMENTS_WITH_PARAMS_DESC = " Select * from apartment left outer join (SELECT distinct apartment.id, booking.arrivalDate, booking.departureDate FROM apartment, booking WHERE apartment.id = booking.apartment_id) as T on T.id = apartment.id where ((T.arrivalDate < ? and T.departureDate < ?) or (T.arrivalDate > ? and T.departureDate > ?) or (T.arrivalDate is null and T.departureDate is null)) and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? ORDER BY apartment.price DESC LIMIT ?, ?";
-    private static final String SQL_GET_FREE_APARTMENTS_WITH_PARAMS_ASC = " Select * from apartment left outer join (SELECT distinct apartment.id, booking.arrivalDate, booking.departureDate FROM apartment, booking WHERE apartment.id = booking.apartment_id) as T on T.id = apartment.id where ((T.arrivalDate < ? and T.departureDate < ?) or (T.arrivalDate > ? and T.departureDate > ?) or (T.arrivalDate is null and T.departureDate is null)) and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=? ORDER BY apartment.price ASC LIMIT ?, ?";
-    private static final String SQL_GET_QUANTITY_OF_FREE_APARTMENTS = " Select COUNT(apartment.id) from apartment left outer join (SELECT distinct apartment.id, booking.arrivalDate, booking.departureDate FROM apartment, booking WHERE apartment.id = booking.apartment_id) as T on T.id = apartment.id where ((T.arrivalDate < ? and T.departureDate < ?) or (T.arrivalDate > ? and T.departureDate > ?) or (T.arrivalDate is null and T.departureDate is null)) and apartment.class_id=? and apartment.quantityOfRooms=? and apartment.price>=? and apartment.price <=?";
+    private static final String SQL_GET_FREE_APARTMENTS_WITH_PARAMS_DESC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where (arrivalDate between ? and ?) or (departureDate  between ? and ? )) as T on T.apartment_id = id) as G where g.apartment_id is null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price DESC LIMIT ?, ?";
+    private static final String SQL_GET_FREE_APARTMENTS_WITH_PARAMS_ASC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where (arrivalDate between ? and ?) or (departureDate  between ? and ? )) as T on T.apartment_id = id) as G where g.apartment_id is null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price ASC LIMIT ?, ?";
+    private static final String SQL_GET_QUANTITY_OF_FREE_APARTMENTS = " Select COUNT(id) from (Select * from apartment left outer join (Select apartment_id from booking where (arrivalDate between ? and ?) or (departureDate  between ? and ? )) as T on T.apartment_id = id) as G where g.apartment_id is null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=?";
 
 
     /**
@@ -143,12 +143,14 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
             }
             pstmt.setString(1, arrivalDate.format(formatter));
             pstmt.setString(2, departureDate.format(formatter));
-            pstmt.setLong(3, classId);
-            pstmt.setInt(4, quantityOfRooms);
-            pstmt.setBigDecimal(5, priceFrom);
-            pstmt.setBigDecimal(6, priceUntil);
-            pstmt.setInt(7, offset);
-            pstmt.setInt(8, howMany);
+            pstmt.setString(3, arrivalDate.format(formatter));
+            pstmt.setString(4, departureDate.format(formatter));
+            pstmt.setLong(5, classId);
+            pstmt.setInt(6, quantityOfRooms);
+            pstmt.setBigDecimal(7, priceFrom);
+            pstmt.setBigDecimal(8, priceUntil);
+            pstmt.setInt(9, offset);
+            pstmt.setInt(10, howMany);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 apartments.add(extractApartment(rs, locale, 1));
@@ -183,12 +185,14 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
         try {
             con = MySqlDAOFactory.createConnection();
             pstmt = con.prepareStatement(SQL_GET_QUANTITY_OF_BOOKED_APARTMENTS);
-            pstmt.setLong(1, classId);
-            pstmt.setInt(2, quantityOfRooms);
-            pstmt.setBigDecimal(3, priceFrom);
-            pstmt.setBigDecimal(4, priceUntil);
-            pstmt.setString(5, arrivalDate.format(formatter));
-            pstmt.setString(6, departureDate.format(formatter));
+            pstmt.setString(1, arrivalDate.format(formatter));
+            pstmt.setString(2, departureDate.format(formatter));
+            pstmt.setString(3, arrivalDate.format(formatter));
+            pstmt.setString(4, departureDate.format(formatter));
+            pstmt.setLong(5, classId);
+            pstmt.setInt(6, quantityOfRooms);
+            pstmt.setBigDecimal(7, priceFrom);
+            pstmt.setBigDecimal(8, priceUntil);
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 result = rs.getInt(1);
@@ -234,12 +238,14 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
             }
             pstmt.setString(1, arrivalDate.format(formatter));
             pstmt.setString(2, departureDate.format(formatter));
-            pstmt.setLong(3, classId);
-            pstmt.setInt(4, quantityOfRooms);
-            pstmt.setBigDecimal(5, priceFrom);
-            pstmt.setBigDecimal(6, priceUntil);
-            pstmt.setInt(7, offset);
-            pstmt.setInt(8, howMany);
+            pstmt.setString(3, arrivalDate.format(formatter));
+            pstmt.setString(4, departureDate.format(formatter));
+            pstmt.setLong(5, classId);
+            pstmt.setInt(6, quantityOfRooms);
+            pstmt.setBigDecimal(7, priceFrom);
+            pstmt.setBigDecimal(8, priceUntil);
+            pstmt.setInt(9, offset);
+            pstmt.setInt(10, howMany);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 apartments.add(extractApartment(rs, locale, 1));
@@ -273,13 +279,14 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
         Connection con = null;
         try {
             con = MySqlDAOFactory.createConnection();
-            pstmt = con.prepareStatement(SQL_GET_QUANTITY_OF_OCCUPIED_APARTMENTS);
-            pstmt.setLong(1, classId);
-            pstmt.setInt(2, quantityOfRooms);
-            pstmt.setBigDecimal(3, priceFrom);
-            pstmt.setBigDecimal(4, priceUntil);
-            pstmt.setString(5, arrivalDate.format(formatter));
-            pstmt.setString(6, departureDate.format(formatter));
+            pstmt.setString(1, arrivalDate.format(formatter));
+            pstmt.setString(2, departureDate.format(formatter));
+            pstmt.setString(3, arrivalDate.format(formatter));
+            pstmt.setString(4, departureDate.format(formatter));
+            pstmt.setLong(5, classId);
+            pstmt.setInt(6, quantityOfRooms);
+            pstmt.setBigDecimal(7, priceFrom);
+            pstmt.setBigDecimal(8, priceUntil);
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 result = rs.getInt(1);
@@ -324,8 +331,8 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
                 pstmt = con.prepareStatement(SQL_GET_FREE_APARTMENTS_WITH_PARAMS_ASC);
             }
             pstmt.setString(1, arrivalDate.format(formatter));
-            pstmt.setString(2, arrivalDate.format(formatter));
-            pstmt.setString(3, departureDate.format(formatter));
+            pstmt.setString(2, departureDate.format(formatter));
+            pstmt.setString(3, arrivalDate.format(formatter));
             pstmt.setString(4, departureDate.format(formatter));
             pstmt.setLong(5, classId);
             pstmt.setInt(6, quantityOfRooms);
@@ -370,8 +377,8 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
             con = MySqlDAOFactory.createConnection();
             pstmt = con.prepareStatement(SQL_GET_QUANTITY_OF_FREE_APARTMENTS);
             pstmt.setString(1, arrivalDate.format(formatter));
-            pstmt.setString(2, arrivalDate.format(formatter));
-            pstmt.setString(3, departureDate.format(formatter));
+            pstmt.setString(2, departureDate.format(formatter));
+            pstmt.setString(3, arrivalDate.format(formatter));
             pstmt.setString(4, departureDate.format(formatter));
             pstmt.setLong(5, classId);
             pstmt.setInt(6, quantityOfRooms);
