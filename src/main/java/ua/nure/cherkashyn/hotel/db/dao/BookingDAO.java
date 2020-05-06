@@ -16,4 +16,8 @@ public interface BookingDAO {
     void makeBooking(Booking booking) throws DBException;
 
     List<Booking> getAllBookingsByUser(User user) throws DBException;
+
+    Booking getBookingById(long id) throws DBException;
+
+    void payForBooking(Booking booking) throws DBException;
 }

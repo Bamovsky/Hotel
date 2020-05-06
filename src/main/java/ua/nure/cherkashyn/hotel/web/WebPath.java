@@ -27,6 +27,7 @@ public final class WebPath {
     public static final String COMMAND_SHOW_APARTMENTS = "/controller?command=showApartments";
     public static final String COMMAND_SHOW_APARTMENTS_CONTENT = "/controller?command=showApartmentsContent&offset=0&statusId=0&classId=0&quantityOfRooms=1&priceFrom=100&priceUntil=2600&orderByASC=false";
     public static final String COMMAND_MAKE_ORDER = "/controller?command=makeOrder";
+    public static final String COMMAND_SHOW_BOOKINGS = "/controller?command=showBookings";
 
     //services
     public static final String SERVICE_AUTHORIZATION = "/authorization";

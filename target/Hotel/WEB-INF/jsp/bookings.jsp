@@ -41,7 +41,8 @@
                         <c:if test="${not empty sessionScope.role}">
                             <c:if test="${sessionScope.role == 'client'}">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<c:url value="/controller?command=showBookings"></c:url>"> <fmt:message key="myBookings"/></a>
+                                    <a class="nav-link" href="<c:url value="/controller?command=showBookings"></c:url>">
+                                        <fmt:message key="myBookings"/></a>
                                 </li>
                             </c:if>
                             <c:if test="${sessionScope.role == 'manager'}">
@@ -98,10 +99,18 @@
                 <tbody>
                 <c:forEach var="bookings" items="${requestScope.bookings}">
                     <tr>
-                        <th scope="row"><c:out value="${bookings.getArrivalDate()}"/></th>
+                        <td><c:out value="${bookings.getArrivalDate()}"/></td>
                         <td><c:out value="${bookings.getDepartureDate()}"/></td>
                         <td><c:out value="${bookings.isPaid()}"/></td>
-                        <td><a href="#">Оплатить</a></td>
+
+                        <td>
+                            <c:if test="${bookings.isPaid() == false}">
+                                <a href="<c:url value="/controller?command=pay&bookingId=${bookings.getId()}"></c:url>">Оплатить</a>
+                            </c:if>
+                            <c:if test="${bookings.isPaid() == true}">
+                                <a href="#">Оплатить</a>
+                            </c:if>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>

@@ -248,7 +248,7 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
             pstmt.setInt(10, howMany);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                apartments.add(extractApartment(rs, locale, 1));
+                apartments.add(extractApartment(rs, locale, 2));
             }
             con.commit();
         } catch (SQLException ex) {

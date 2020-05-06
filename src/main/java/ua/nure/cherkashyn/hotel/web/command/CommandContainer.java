@@ -30,6 +30,7 @@ public class CommandContainer {
         commands.put("makeOrder", new MakeOrderCommand());
         commands.put("logOut", new LogOutCommand());
         commands.put("showBookings", new ShowBooking());
+        commands.put("pay", new PayCommand());
 
     }
 

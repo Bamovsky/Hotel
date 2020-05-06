@@ -38,6 +38,8 @@ public class BookingDAOMySQL implements BookingDAO {
 
     private static final String SQL_MAKE_BOOKING = "INSERT INTO booking (bookingDate, arrivalDate, departureDate, isPaid, users_id, apartment_id, status_id) VALUES (?,?,?,0,?,?,1)";
     private static final String SQL_GET_ALL_BOOKINGS_FOR_USER = "SELECT * FROM booking where users_id = ? ORDER BY arrivalDate";
+    private static final String SQL_PAY_FOR_BOOKING = "UPDATE booking SET isPaid = 1, status_id = 2  WHERE id = ?";
+    private static final String SQL_GET_BOOKING_BY_ID = "SELECT * FROM booking WHERE id = ?";
 
 
     /**
@@ -82,12 +84,9 @@ public class BookingDAOMySQL implements BookingDAO {
             pstmt = con.prepareStatement(SQL_GET_ALL_BOOKINGS_FOR_USER);
             pstmt.setLong(1, user.getId());
             rs = pstmt.executeQuery();
-            LOG.debug("here");
             while (rs.next()) {
                 bookings.add(extractBooking(rs));
             }
-            LOG.debug("there");
-            LOG.debug(bookings);
             con.commit();
         } catch (SQLException ex) {
             DBUtils.rollback(con);
@@ -97,6 +96,51 @@ public class BookingDAOMySQL implements BookingDAO {
             DBUtils.close(con, pstmt, rs);
         }
         return bookings;
+    }
+
+    @Override
+    public Booking getBookingById(long id) throws DBException {
+        Booking booking = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_GET_BOOKING_BY_ID);
+            pstmt.setLong(1, id);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                booking = extractBooking(rs);
+            }
+            con.commit();
+        } catch (SQLException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
+        return booking;
+    }
+
+    @Override
+    public void payForBooking(Booking booking) throws DBException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_PAY_FOR_BOOKING);
+            pstmt.setLong(1, booking.getId());
+            pstmt.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
     }
 
 
