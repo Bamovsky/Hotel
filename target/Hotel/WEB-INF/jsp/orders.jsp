@@ -34,17 +34,12 @@
                             <a class="nav-link" href="<c:url value="index.jsp"></c:url>"> <fmt:message key="main"/><br/><span
                                     class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<c:url value="/controller?command=showApartments"></c:url>">
-                                <fmt:message key="apartments"/></a>
-                        </li>
+                        <c:if test="${sessionScope.role == 'client'}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="<c:url value="/controller?command=showApartments"></c:url>"><fmt:message key="apartments"/></a>
+                            </li>
+                        </c:if>
                         <c:if test="${not empty sessionScope.role}">
-                            <c:if test="${sessionScope.role == 'client'}">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="<c:url value="/controller?command=showBookings"></c:url>">
-                                        <fmt:message key="myBookings"/></a>
-                                </li>
-                            </c:if>
                             <c:if test="${sessionScope.role == 'manager'}">
                                 <li class="nav-item">
                                     <a class="nav-link" href="#"> <fmt:message key="myOrders"/></a>
@@ -107,7 +102,8 @@
                         <td><c:out value="${orders.getDepartureDate()}"/></td>
                         <td><c:out value="${orders.getNumberOfRooms()}"/></td>
                         <td><c:out value="${orders.getClassInString()}"/></td>
-                        <td><a href="#">Выбор апартаментов</a></td>
+                        <td><a href="<c:url value="/controller?command=showApartmentsAsManager&orderId=${orders.getId()}"></c:url>">Выбор
+                            апартаментов</a></td>
                     </tr>
                 </c:forEach>
 

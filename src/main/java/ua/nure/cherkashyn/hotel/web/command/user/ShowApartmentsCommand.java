@@ -33,8 +33,8 @@ public class ShowApartmentsCommand extends Command {
 
         User user = (User) req.getSession().getAttribute("user");
 
-        if(user != null) {
-            if(Role.getRole(user) == Role.MANAGER){
+        if (user != null) {
+            if (Role.getRole(user) == Role.MANAGER && req.getAttribute("orderId") == null) {
                 req.setAttribute("approved", true);
                 req.setAttribute("title", "Error");
                 req.setAttribute("message", "Неоходимо зайти в мои заказы и выбрать оттуда");

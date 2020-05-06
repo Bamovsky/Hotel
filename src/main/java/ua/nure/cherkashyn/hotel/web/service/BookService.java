@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 import ua.nure.cherkashyn.hotel.db.DAOFactory;
+import ua.nure.cherkashyn.hotel.db.dao.ApartmentDAO;
 import ua.nure.cherkashyn.hotel.db.dao.BookingDAO;
-import ua.nure.cherkashyn.hotel.db.dao.OrdersDAO;
+import ua.nure.cherkashyn.hotel.db.entity.Apartment;
 import ua.nure.cherkashyn.hotel.db.entity.Booking;
 import ua.nure.cherkashyn.hotel.db.entity.User;
 import ua.nure.cherkashyn.hotel.exception.DBException;
-import ua.nure.cherkashyn.hotel.web.WebPath;
+import ua.nure.cherkashyn.hotel.mail.MailMessages;
+import ua.nure.cherkashyn.hotel.mail.Sender;
+import ua.nure.cherkashyn.hotel.mail.SenderFactory;
 import ua.nure.cherkashyn.hotel.web.service.entity.BookingServiceEntity;
 
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 
 @WebServlet("/book")
@@ -69,10 +73,16 @@ public class BookService extends HttpServlet {
                 setBookingFields(user, booking, bookingDate, arrivalDate, departureDate, apartmentId);
 
                 BookingDAO dao = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getBookingDAO();
+                ApartmentDAO apartmentDAO = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getApartmentDAO();
+
+                Locale locale = Locale.forLanguageTag((String) req.getSession().getAttribute("locale"));
+                Apartment apartment;
 
                 try {
                     dao.makeBooking(booking);
                     setSuccessfulBooking(bookingServiceEntity);
+                    apartment = apartmentDAO.getApartmentById(booking.getApartmentId(), locale);
+                    new Thread(() -> SendBookingMessage(user.getEmail(), apartment, booking)).start();
                 } catch (DBException e) {
                     LOG.error("er");
                 }
@@ -141,6 +151,21 @@ public class BookService extends HttpServlet {
             return true;
         }
         return false;
+    }
+
+
+    private void SendBookingMessage(String email, Apartment apartment, Booking booking) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Вам небходимо оплатить бронирование номера ");
+        builder.append(apartment.getName());
+        builder.append(" Который был заказан на следующие даты : \n");
+        builder.append("Дата прибытия ");
+        builder.append(booking.getArrivalDate());
+        builder.append("\n Дата убытия ");
+        builder.append(booking.getDepartureDate());
+        builder.append("\n Что бы опалтить пройдите в 'Мои бронирования'");
+        Sender sender = SenderFactory.getSender(SenderFactory.GOOGLE_MAIL_TLS);
+        sender.send(MailMessages.MESSAGE_TITLE_BOOKING, builder.toString(), email);
     }
 
 }

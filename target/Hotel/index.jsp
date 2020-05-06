@@ -34,10 +34,11 @@
                             <a class="nav-link" href="<c:url value="index.jsp"></c:url>"> <fmt:message key="main"/><br/><span
                                     class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<c:url value="/controller?command=showApartments"></c:url>">
-                                <fmt:message key="apartments"/></a>
-                        </li>
+                        <c:if test="${sessionScope.role == 'client'}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="<c:url value="/controller?command=showApartments"></c:url>"><fmt:message key="apartments"/></a>
+                            </li>
+                        </c:if>
                         <c:if test="${not empty sessionScope.role}">
                             <c:if test="${sessionScope.role == 'client'}">
                                 <li class="nav-item">
@@ -86,8 +87,8 @@
     </header>
 
     <div class="mainWrapper">
-        <section class="container">
-            <div class="main col-sm-12">
+        <section class="container bg-light">
+            <div class="main col-sm-12 bg-light">
                 <form class="form-row" action="<c:url value="/controller"></c:url>">
 
                     <input type="text" name="command" value="makeOrder" style="display: none">

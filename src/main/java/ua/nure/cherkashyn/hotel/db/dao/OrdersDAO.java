@@ -15,4 +15,8 @@ public interface OrdersDAO {
     void makeOrder(Order order, User user) throws DBException;
 
     List<Order> getAllUnprocessedOrders() throws DBException;
+
+    Order getOrderById(long id) throws DBException;
+
+    void deleteOrder (Order order) throws DBException;
 }

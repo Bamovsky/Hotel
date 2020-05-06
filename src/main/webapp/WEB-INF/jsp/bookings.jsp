@@ -45,11 +45,6 @@
                                         <fmt:message key="myBookings"/></a>
                                 </li>
                             </c:if>
-                            <c:if test="${sessionScope.role == 'manager'}">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#"> <fmt:message key="myOrders"/></a>
-                                </li>
-                            </c:if>
                         </c:if>
                         <li class="signIn nav-item">
                             <c:if test="${empty sessionScope.user}">

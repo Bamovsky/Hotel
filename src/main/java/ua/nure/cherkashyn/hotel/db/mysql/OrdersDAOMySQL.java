@@ -33,6 +33,8 @@ public class OrdersDAOMySQL implements OrdersDAO {
     private static final String SQL_MAKE_ORDER = "INSERT INTO orders (orderDate, numberOfRooms, arrivalDate, departureDate, isProcessed, users_id, class_id, apartment_id) VALUES (?,?,?,?,0,?,?,null)";
     private static final String SQL_GET_ALL_UNPROCESSED_ORDERS = "SELECT * FROM orders WHERE isProcessed = 0";
     private static final String SQL_GET_USER_EMAIL_BY_ORDER = "SELECT email FROM users WHERE id = ?";
+    private static final String SQL_ORDER_BY_ID = "SELECT * FROM orders WHERE id = ?";
+    private static final String SQL_DELETE_ORDER = "DELETE FROM orders where id = ?";
 
 
     /**
@@ -90,6 +92,51 @@ public class OrdersDAOMySQL implements OrdersDAO {
             DBUtils.close(con, pstmt, rs);
         }
         return orders;
+    }
+
+    @Override
+    public Order getOrderById(long id) throws DBException {
+        Order order = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_ORDER_BY_ID);
+            pstmt.setLong(1, id);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                order = extractOrder(rs);
+            }
+            con.commit();
+        } catch (SQLException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
+        return order;
+    }
+
+    @Override
+    public void deleteOrder(Order order) throws DBException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_DELETE_ORDER);
+            pstmt.setLong(1, order.getId());
+            pstmt.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
     }
 
 

@@ -35,11 +35,16 @@ public class ShowApartmentsContentCommand extends Command {
         int offset = 0;
         int quantityOfApartments = 0;
 
+        long orderId;
+
         LocalDate arrivalDate = null;
         LocalDate departureDate = null;
         LocalDate currentDate = LocalDate.now();
 
-
+        if("manager".equals(req.getSession().getAttribute("role"))){
+            orderId = Long.parseLong(req.getParameter("orderId"));
+            req.setAttribute("orderId", orderId);
+        }
 
         try {
             arrivalDate = LocalDate.parse(req.getParameter(("arrivalDate")));

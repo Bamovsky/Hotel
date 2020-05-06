@@ -6,6 +6,7 @@ import ua.nure.cherkashyn.hotel.db.Fields;
 import ua.nure.cherkashyn.hotel.db.MySqlDAOFactory;
 import ua.nure.cherkashyn.hotel.db.dao.ApartmentDAO;
 import ua.nure.cherkashyn.hotel.db.entity.Apartment;
+import ua.nure.cherkashyn.hotel.db.entity.User;
 import ua.nure.cherkashyn.hotel.exception.DBException;
 import ua.nure.cherkashyn.hotel.exception.Messages;
 
@@ -36,6 +37,8 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
 
     private static final String SQL_GET_MAX_PRICE = " select max(price) from apartment";
     private static final String SQL_GET_MIN_PRICE = " select min(price) from apartment";
+
+    private static final String SQL_GET_APARTMENT_BY_ID = "SELECT * FROM apartment where id = ?";
 
     private static final String SQL_GET_I18N_APARTMENT_NAME = "SELECT text from translationApartment where i18nFieldsApartment_id = (select id from i18nFieldsApartment where fieldName = 'name') and language_id = (select id from language where name = ?) and apartment_id =?";
     private static final String SQL_GET_I18N_APARTMENT_STATUS = "SELECT statusName from translationStatus where status_id =? and language_id = (select id from language where name = ?)";
@@ -401,6 +404,31 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
         }
 
         return result;
+    }
+
+    @Override
+    public Apartment getApartmentById(long id, Locale locale) throws DBException {
+        Apartment apartment = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_GET_APARTMENT_BY_ID);
+            pstmt.setLong(1, id);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                apartment = extractApartment(rs, locale, 0);
+            }
+            con.commit();
+        } catch (SQLException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
+        return apartment;
     }
 
 

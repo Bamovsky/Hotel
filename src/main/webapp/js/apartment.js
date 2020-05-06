@@ -25,7 +25,8 @@ function ajaxGetApartments (slide1, slide2, offset){
             priceUntil: slide2,
             orderByASC : $("#PriceSelect").children("option:selected").val(),
             arrivalDate: $("#ArrivalDate").val(),
-            departureDate :$("#DepartureDate").val()
+            departureDate :$("#DepartureDate").val(),
+            orderId: $("#orderId").val()
         },
         success: function (result) {
             $("#ApartmentContent").html(result);
