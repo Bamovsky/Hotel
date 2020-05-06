@@ -42,4 +42,14 @@ public final class Fields {
     public static final String ORDER_APARTMENT_ID = "apartment_id";
     public static final String ORDER_CLASS_ID = "class_id";
 
+
+    //booking
+    public static final String BOOKING_DATE = "bookingDate";
+    public static final String BOOKING_ARRIVAL_DATE = "arrivalDate";
+    public static final String BOOKING_DEPARTURE_DATE = "departureDate";
+    public static final String BOOKING_USER_ID = "users_id";
+    public static final String BOOKING_APARTMENT_ID = "apartment_id";
+    public static final String BOOKING_IS_PAID = "isPaid";
+    public static final String BOOKING_STATUS_ID = "status_id";
+
 }

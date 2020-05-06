@@ -4,11 +4,8 @@
 
 
 
-<c:if test="${not empty requestScope.language}">
-    <c:set var="language" value="${param.language}" scope="session"/>
-    <fmt:setLocale value="${language}" />
-</c:if>
-
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="hotel"/>
 
 
 <html>

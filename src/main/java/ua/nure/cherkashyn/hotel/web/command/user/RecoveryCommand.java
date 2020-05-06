@@ -1,4 +1,4 @@
-package ua.nure.cherkashyn.hotel.web.command.common;
+package ua.nure.cherkashyn.hotel.web.command.user;
 
 import org.apache.log4j.Logger;
 import ua.nure.cherkashyn.hotel.db.DAOFactory;
@@ -8,20 +8,20 @@ import ua.nure.cherkashyn.hotel.exception.AppException;
 import ua.nure.cherkashyn.hotel.web.WebPath;
 import ua.nure.cherkashyn.hotel.web.command.Command;
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 /**
- * Command for approving an user
+ * RecoveryCommand
  *
  * @author Vladimir Cherkashyn
  */
-public class ApproveCommand extends Command {
+public class RecoveryCommand extends Command {
 
-    private static final long serialVersionUID = -5599568387891847468L;
+    private static final long serialVersionUID = 7186043872359971704L;
 
-    private static final Logger LOG = Logger.getLogger(ApproveCommand.class);
+    private static final Logger LOG = Logger.getLogger(RecoveryCommand.class);
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
@@ -38,18 +38,10 @@ public class ApproveCommand extends Command {
         UserDAO dao = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getUserDAO();
         User user = dao.findUserByApprovedToken(approvedToken);
 
-        if (user != null) {
-            dao.approveUser(user);
-        } else {
-            throw new AppException("user with this token was't found");
+        if (user == null) {
+            throw new AppException("User with this token was't found");
         }
 
-        LOG.trace("User was approved by token");
-
-        req.setAttribute("approved", true);
-        req.setAttribute("title", "Approving");
-        req.setAttribute("message", "Your email has been approved.");
-
-        return WebPath.PAGE_LOGIN;
+        return WebPath.PAGE_RECOVERY;
     }
 }

@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 
-<fmt:setLocale value="${sessionScope.locale}" />
-<fmt:setBundle basename="hotel" />
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="hotel"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +22,8 @@
         <div class="container">
             <nav class="menu navbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="#">Logo</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -30,38 +31,45 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navigation navbar-nav">
                         <li class="nav-item active">
-                            <a class="nav-link" href="<c:url value="index.jsp"></c:url>"> <fmt:message key = "main"/><br/><span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="<c:url value="index.jsp"></c:url>"> <fmt:message key="main"/><br/><span
+                                    class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<c:url value="/controller?command=showApartments"></c:url>"> <fmt:message key = "apartments"/></a>
+                            <a class="nav-link" href="<c:url value="/controller?command=showApartments"></c:url>">
+                                <fmt:message key="apartments"/></a>
                         </li>
-                        <c:if test="${not empty sessionScope.user}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"> <fmt:message key = "myOrders"/></a>
-                        </li>
-                        </c:if>
-                        <c:if test="${not empty sessionScope.user}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#"> <fmt:message key = "myOrders"/></a>
-                            </li>
+                        <c:if test="${not empty sessionScope.role}">
+                            <c:if test="${sessionScope.role == 'client'}">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<c:url value="/controller?command=showBookings"></c:url>"> <fmt:message key="myBookings"/></a>
+                                </li>
+                            </c:if>
                         </c:if>
                         <li class="signIn nav-item">
                             <c:if test="${empty sessionScope.user}">
-                                <a class="nav-link" href="<c:url value="login.jsp"></c:url>"><fmt:message key = "signIn"/></a>
+                                <a class="nav-link" href="<c:url value="login.jsp"></c:url>"><fmt:message
+                                        key="signIn"/></a>
                             </c:if>
                             <c:if test="${not empty sessionScope.user}">
-                                <a class="nav-link" href="<c:url value="/controller?command=logOut"></c:url>"><fmt:message key = "logOut"/></a>
+                                <a class="nav-link"
+                                   href="<c:url value="/controller?command=logOut"></c:url>"><fmt:message
+                                        key="logOut"/></a>
                             </c:if>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false">
-                                <fmt:message key = "language"/>
+                                <fmt:message key="language"/>
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="<c:url value="/controller?command=changeLocale&newLocale=ru&linkToForward=apartments"></c:url>"><fmt:message key = "russian"/></a>
-                                <a class="dropdown-item" href="<c:url value="/controller?command=changeLocale&newLocale=en&linkToForward=apartments"></c:url>"><fmt:message key = "english"/></a>
+                                <a class="dropdown-item"
+                                   href="<c:url value="/controller?command=changeLocale&newLocale=ru&linkToForward=apartments"></c:url>"><fmt:message
+                                        key="russian"/></a>
+                                <a class="dropdown-item"
+                                   href="<c:url value="/controller?command=changeLocale&newLocale=en&linkToForward=apartments"></c:url>"><fmt:message
+                                        key="english"/></a>
                             </div>
                         </li>
 
@@ -80,8 +88,10 @@
                     <p>Диапазон цен</p>
                     <div class="range-slider">
                         <span class="rangeValues"></span>
-                        <input value="${requestScope.minPrice}" min="${requestScope.minPrice}" max="${requestScope.maxPrice}" step="1" type="range">
-                        <input value="${requestScope.maxPrice}" min="${requestScope.minPrice}" max="${requestScope.maxPrice}" step="1" type="range">
+                        <input value="${requestScope.minPrice}" min="${requestScope.minPrice}"
+                               max="${requestScope.maxPrice}" step="1" type="range">
+                        <input value="${requestScope.maxPrice}" min="${requestScope.minPrice}"
+                               max="${requestScope.maxPrice}" step="1" type="range">
                     </div>
 
                     <div class="form-group">
@@ -124,7 +134,7 @@
                     <div class="form-group">
                         <label for="ArrivalDate">дата 1</label>
                         <div>
-                            <input class="form-control"  type="date" id="ArrivalDate">
+                            <input class="form-control" type="date" id="ArrivalDate">
                         </div>
                     </div>
                     <div class="form-group">
@@ -133,7 +143,6 @@
                             <input class="form-control" type="date" id="DepartureDate">
                         </div>
                     </div>
-
 
                 </form>
 

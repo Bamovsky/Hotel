@@ -279,6 +279,7 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
         Connection con = null;
         try {
             con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_GET_QUANTITY_OF_OCCUPIED_APARTMENTS);
             pstmt.setString(1, arrivalDate.format(formatter));
             pstmt.setString(2, departureDate.format(formatter));
             pstmt.setString(3, arrivalDate.format(formatter));

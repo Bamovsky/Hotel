@@ -1,4 +1,4 @@
-package ua.nure.cherkashyn.hotel.web.command.common;
+package ua.nure.cherkashyn.hotel.web.command.user;
 
 import org.apache.log4j.Logger;
 import ua.nure.cherkashyn.hotel.exception.AppException;
@@ -28,6 +28,7 @@ public class ChangeLocaleCommand extends Command {
         links.put("login", WebPath.PAGE_LOGIN);
         links.put("apartments", WebPath.COMMAND_SHOW_APARTMENTS);
         links.put("index", WebPath.PAGE_INDEX);
+        links.put("booking", WebPath.PAGE_BOOKING);
     }
 
     @Override

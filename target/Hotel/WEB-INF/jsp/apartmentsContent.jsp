@@ -18,7 +18,12 @@
                 <h5 class="card-title">Статус: <c:out value="${apartment.getStatusI18N()}"/></h5>
                 <h5 class="card-title">Класс: <c:out value="${apartment.getClassI18N()}"/></h5>
                 <p class="card-text"> <c:out value="${apartment.getShortDescription()}"/></p>
+                <c:if test = "${apartment.getStatusId() == 0 && requestScope.role == 'client'}">
                 <a href="#" class="btn btn-primary Book" data-id ="<c:out value="${apartment.getId()}"/>">Забронировать</a>
+                </c:if>
+                <c:if test = "${apartment.getStatusId() == 0 && requestScope.role == 'manager'}">
+                    <a href="#" class="btn btn-primary Book" data-id ="<c:out value="${apartment.getId()}"/>">Выбрать</a>
+                </c:if>
             </div>
         </div>
     </c:forEach>

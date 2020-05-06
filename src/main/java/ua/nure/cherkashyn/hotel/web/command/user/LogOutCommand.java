@@ -1,4 +1,4 @@
-package ua.nure.cherkashyn.hotel.web.command.common;
+package ua.nure.cherkashyn.hotel.web.command.user;
 
 
 import ua.nure.cherkashyn.hotel.web.WebPath;

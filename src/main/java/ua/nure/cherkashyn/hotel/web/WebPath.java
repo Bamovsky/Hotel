@@ -18,6 +18,7 @@ public final class WebPath {
     public static final String PAGE_ERROR_PAGE = "/WEB-INF/jsp/error_page.jsp";
     public static final String PAGE_APARTMENTS = "/WEB-INF/jsp/apartments.jsp";
     public static final String PAGE_APARTMENTS_CONTENT = "/WEB-INF/jsp/apartmentsContent.jsp";
+    public static final String PAGE_BOOKING = "/WEB-INF/jsp/bookings.jsp";
 
 
     // commands

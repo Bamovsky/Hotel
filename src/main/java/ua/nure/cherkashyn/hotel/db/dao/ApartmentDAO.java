@@ -74,4 +74,5 @@ public interface ApartmentDAO {
                                               LocalDate arrivalDate,
                                               LocalDate departureDate) throws DBException;
 
+
 }

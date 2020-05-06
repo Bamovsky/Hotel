@@ -1,4 +1,4 @@
-package ua.nure.cherkashyn.hotel.web.command.common;
+package ua.nure.cherkashyn.hotel.web.command.user;
 
 import org.apache.log4j.Logger;
 import ua.nure.cherkashyn.hotel.db.DAOFactory;
