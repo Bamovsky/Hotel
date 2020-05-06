@@ -29,6 +29,7 @@ public class ChangeLocaleCommand extends Command {
         links.put("apartments", WebPath.COMMAND_SHOW_APARTMENTS);
         links.put("index", WebPath.PAGE_INDEX);
         links.put("booking", WebPath.PAGE_BOOKING);
+        links.put("orders", WebPath.PAGE_ORDERS);
     }
 
     @Override

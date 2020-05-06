@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import ua.nure.cherkashyn.hotel.db.DAOFactory;
 import ua.nure.cherkashyn.hotel.db.dao.OrdersDAO;
 import ua.nure.cherkashyn.hotel.db.entity.Order;
+import ua.nure.cherkashyn.hotel.db.entity.Role;
 import ua.nure.cherkashyn.hotel.db.entity.User;
 import ua.nure.cherkashyn.hotel.exception.AppException;
 import ua.nure.cherkashyn.hotel.exception.DBException;
@@ -38,7 +39,22 @@ public class MakeOrderCommand extends Command {
         Order order = new Order();
 
         User user = (User) req.getSession().getAttribute("user");
+
+        if(user == null) {
+            req.setAttribute("approved", true);
+            req.setAttribute("title", "Error");
+            req.setAttribute("message", "Необходимо зайти в систему");
+            return WebPath.PAGE_INDEX;
+        }
+
         OrdersDAO dao = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getOrdersDAO();
+
+        if(Role.getRole(user) == Role.MANAGER){
+            req.setAttribute("approved", true);
+            req.setAttribute("title", "Error");
+            req.setAttribute("message", "Мендржер не может заказывать");
+            return WebPath.PAGE_INDEX;
+        }
 
         try {
             apartmentClassId = Long.parseLong( req.getParameter("apartmentClass").trim());
@@ -84,6 +100,9 @@ public class MakeOrderCommand extends Command {
 
         try {
             dao.makeOrder(order, user);
+            req.setAttribute("approved", true);
+            req.setAttribute("title", "Error");
+            req.setAttribute("message", "Заявка подана");
         } catch (DBException e) {
             throw new AppException("Can't make an order");
         }

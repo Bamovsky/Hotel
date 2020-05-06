@@ -2,6 +2,8 @@ package ua.nure.cherkashyn.hotel.web.command.user;
 
 import ua.nure.cherkashyn.hotel.db.DAOFactory;
 import ua.nure.cherkashyn.hotel.db.dao.ApartmentDAO;
+import ua.nure.cherkashyn.hotel.db.entity.Role;
+import ua.nure.cherkashyn.hotel.db.entity.User;
 import ua.nure.cherkashyn.hotel.exception.AppException;
 import ua.nure.cherkashyn.hotel.exception.DBException;
 import ua.nure.cherkashyn.hotel.web.WebPath;
@@ -27,6 +29,18 @@ public class ShowApartmentsCommand extends Command {
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
         BigDecimal maxPrice = null;
         BigDecimal minPrice = null;
+
+
+        User user = (User) req.getSession().getAttribute("user");
+
+        if(user != null) {
+            if(Role.getRole(user) == Role.MANAGER){
+                req.setAttribute("approved", true);
+                req.setAttribute("title", "Error");
+                req.setAttribute("message", "Неоходимо зайти в мои заказы и выбрать оттуда");
+                return WebPath.PAGE_INDEX;
+            }
+        }
 
 
         ApartmentDAO dao = DAOFactory.getDAOFactory(DAOFactory.MYSQL).getApartmentDAO();

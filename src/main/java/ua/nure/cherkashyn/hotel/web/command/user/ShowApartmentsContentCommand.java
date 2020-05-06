@@ -39,6 +39,8 @@ public class ShowApartmentsContentCommand extends Command {
         LocalDate departureDate = null;
         LocalDate currentDate = LocalDate.now();
 
+
+
         try {
             arrivalDate = LocalDate.parse(req.getParameter(("arrivalDate")));
             departureDate = LocalDate.parse(req.getParameter(("departureDate")));

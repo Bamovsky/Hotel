@@ -19,7 +19,7 @@ public final class WebPath {
     public static final String PAGE_APARTMENTS = "/WEB-INF/jsp/apartments.jsp";
     public static final String PAGE_APARTMENTS_CONTENT = "/WEB-INF/jsp/apartmentsContent.jsp";
     public static final String PAGE_BOOKING = "/WEB-INF/jsp/bookings.jsp";
-
+    public static final String PAGE_ORDERS = "/WEB-INF/jsp/orders.jsp";
 
     // commands
     public static final String COMMAND_APPROVE_USER = "/controller?command=approve";

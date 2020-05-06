@@ -46,7 +46,7 @@
                             </c:if>
                             <c:if test="${sessionScope.role == 'manager'}">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#"> <fmt:message key="myOrders"/></a>
+                                    <a class="nav-link" href="<c:url value="/controller?command=showOrders"></c:url>"> <fmt:message key="myOrders"/></a>
                                 </li>
                             </c:if>
                         </c:if>

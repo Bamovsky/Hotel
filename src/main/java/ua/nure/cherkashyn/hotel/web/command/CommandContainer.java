@@ -1,6 +1,7 @@
 package ua.nure.cherkashyn.hotel.web.command;
 
 import org.apache.log4j.Logger;
+import ua.nure.cherkashyn.hotel.web.command.manager.ShowOrdersCommand;
 import ua.nure.cherkashyn.hotel.web.command.user.*;
 
 import java.util.Map;
@@ -31,6 +32,7 @@ public class CommandContainer {
         commands.put("logOut", new LogOutCommand());
         commands.put("showBookings", new ShowBooking());
         commands.put("pay", new PayCommand());
+        commands.put("showOrders", new ShowOrdersCommand());
 
     }
 

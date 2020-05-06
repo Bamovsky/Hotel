@@ -21,6 +21,9 @@ public class Order extends Entity {
     private long classId;
     private long apartmentId;
 
+
+    private String userEmail;
+
     public LocalDate getOrderDate() {
         return orderDate;
     }
@@ -83,5 +86,18 @@ public class Order extends Entity {
 
     public void setClassId(long classId) {
         this.classId = classId;
+    }
+
+
+    public String getClassInString() {
+        return ApartmentClass.values()[(int) classId].getName();
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

@@ -40,6 +40,7 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
     private static final String SQL_GET_I18N_APARTMENT_NAME = "SELECT text from translationApartment where i18nFieldsApartment_id = (select id from i18nFieldsApartment where fieldName = 'name') and language_id = (select id from language where name = ?) and apartment_id =?";
     private static final String SQL_GET_I18N_APARTMENT_STATUS = "SELECT statusName from translationStatus where status_id =? and language_id = (select id from language where name = ?)";
     private static final String SQL_GET_I18N_APARTMENT_CLASS = "SELECT className from translationClass where class_id =? and language_id = (select id from language where name = ?)";
+    private static final String SQL_GET_I18N_APARTMENT_SHORT_DESCRIPTION = "SELECT text from translationApartment where i18nFieldsApartment_id = (select id from i18nFieldsApartment where fieldName = 'shortDescription') and language_id = (select id from language where name = ?) and apartment_id =?";
 
     private static final String SQL_GET_BOOKED_APARTMENTS_WITH_PARAMS_DESC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 1) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price DESC LIMIT ?, ?";
     private static final String SQL_GET_BOOKED_APARTMENTS_WITH_PARAMS_ASC = "Select * from (Select * from apartment left outer join (Select apartment_id from booking where ((arrivalDate between ? and ?) or (departureDate  between ? and ? )) and status_id = 1) as T on T.apartment_id = id) as G where g.apartment_id is not null and G.class_id=? and G.quantityOfRooms=? and G.price>=? and G.price <=? ORDER BY G.price ASC LIMIT ?, ?";
@@ -414,8 +415,7 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
         Apartment apartment = new Apartment();
         apartment.setId(rs.getLong(Fields.ENTITY_ID));
         apartment.setName(getApartmentName(apartment, locale));
-        apartment.setShortDescription(rs.getString(Fields.APARTMENT_SHORT_DESCRIPTION));
-        apartment.setDescription(rs.getString(Fields.APARTMENT_DESCRIPTION));
+        apartment.setShortDescription(getApartmentShortDescription(apartment, locale));
         apartment.setPrice(rs.getBigDecimal(Fields.APARTMENT_PRICE));
         apartment.setQuantityOfRooms(rs.getInt(Fields.APARTMENT_QUANTITY_OF_ROOMS));
         apartment.setImg(rs.getString(Fields.APARTMENT_IMG));
@@ -441,6 +441,38 @@ public class ApartmentDAOMySQL implements ApartmentDAO {
         try {
             con = MySqlDAOFactory.createConnection();
             pstmt = con.prepareStatement(SQL_GET_I18N_APARTMENT_NAME);
+            LOG.debug(locale.toString().toLowerCase());
+            pstmt.setString(1, locale.toString().toLowerCase());
+            pstmt.setLong(2, apartment.getId());
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getString(1);
+            }
+            con.commit();
+        } catch (SQLException | DBException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
+        return result;
+    }
+
+    /**
+     * Get apartment short description in needed language
+     *
+     * @param apartment into that apartment will be put a name in needed language
+     * @param locale    for i18n
+     */
+    private String getApartmentShortDescription(Apartment apartment, Locale locale) throws DBException {
+        String result = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_GET_I18N_APARTMENT_SHORT_DESCRIPTION);
             LOG.debug(locale.toString().toLowerCase());
             pstmt.setString(1, locale.toString().toLowerCase());
             pstmt.setLong(2, apartment.getId());

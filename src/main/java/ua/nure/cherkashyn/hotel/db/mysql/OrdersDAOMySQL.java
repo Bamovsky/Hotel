@@ -5,14 +5,18 @@ import ua.nure.cherkashyn.hotel.db.DBUtils;
 import ua.nure.cherkashyn.hotel.db.Fields;
 import ua.nure.cherkashyn.hotel.db.MySqlDAOFactory;
 import ua.nure.cherkashyn.hotel.db.dao.OrdersDAO;
+import ua.nure.cherkashyn.hotel.db.entity.Booking;
 import ua.nure.cherkashyn.hotel.db.entity.Order;
 import ua.nure.cherkashyn.hotel.db.entity.User;
 import ua.nure.cherkashyn.hotel.exception.DBException;
 import ua.nure.cherkashyn.hotel.exception.Messages;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of OrdersDAO for MySQL database.
@@ -27,6 +31,8 @@ public class OrdersDAOMySQL implements OrdersDAO {
     // SQL queries
     // //////////////////////////////////////////////////////////
     private static final String SQL_MAKE_ORDER = "INSERT INTO orders (orderDate, numberOfRooms, arrivalDate, departureDate, isProcessed, users_id, class_id, apartment_id) VALUES (?,?,?,?,0,?,?,null)";
+    private static final String SQL_GET_ALL_UNPROCESSED_ORDERS = "SELECT * FROM orders WHERE isProcessed = 0";
+    private static final String SQL_GET_USER_EMAIL_BY_ORDER = "SELECT email FROM users WHERE id = ?";
 
 
     /**
@@ -59,7 +65,56 @@ public class OrdersDAOMySQL implements OrdersDAO {
             DBUtils.close(pstmt);
             DBUtils.close(con);
         }
+    }
 
+    @Override
+    public List<Order> getAllUnprocessedOrders() throws DBException {
+        List<Order> orders = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_GET_ALL_UNPROCESSED_ORDERS);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                orders.add(extractOrder(rs));
+            }
+            setForEachOrderUserEmail(orders);
+            con.commit();
+        } catch (SQLException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
+        return orders;
+    }
+
+
+    private void setForEachOrderUserEmail(List<Order> orders) throws DBException {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            con = MySqlDAOFactory.createConnection();
+            pstmt = con.prepareStatement(SQL_GET_USER_EMAIL_BY_ORDER);
+            for (Order order : orders) {
+                pstmt.setLong(1, order.getUserId());
+                rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    order.setUserEmail(rs.getString(1));
+                }
+            }
+            con.commit();
+        } catch (SQLException | DBException ex) {
+            DBUtils.rollback(con);
+            LOG.error(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+            throw new DBException(Messages.ERR_CANNOT_OBTAIN_USER_BY_LOGIN, ex);
+        } finally {
+            DBUtils.close(con, pstmt, rs);
+        }
     }
 
 
@@ -71,13 +126,12 @@ public class OrdersDAOMySQL implements OrdersDAO {
     private Order extractOrder(ResultSet rs) throws SQLException {
         Order order = new Order();
         order.setId(rs.getLong(Fields.ENTITY_ID));
-        order.setOrderDate(rs.getDate(Fields.ORDER_DATE).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        order.setOrderDate(LocalDate.parse(rs.getString(Fields.ORDER_DATE)));
         order.setNumberOfRooms(rs.getInt(Fields.ORDER_NUMBER_OF_ROOMS));
-        order.setArrivalDate(rs.getDate(Fields.ORDER_ARRIVAL_DATE).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        order.setDepartureDate(rs.getDate(Fields.ORDER_DEPARTURE_DATE).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        order.setArrivalDate(LocalDate.parse(rs.getString(Fields.ORDER_ARRIVAL_DATE)));
+        order.setDepartureDate(LocalDate.parse(rs.getString(Fields.ORDER_DEPARTURE_DATE)));
         order.setProcessed(rs.getBoolean(Fields.ORDER_IS_PROCESSED));
         order.setUserId(rs.getLong(Fields.ORDER_USER_ID));
-        order.setApartmentId(rs.getLong(Fields.ORDER_APARTMENT_ID));
         order.setClassId(rs.getLong(Fields.ORDER_CLASS_ID));
         return order;
     }

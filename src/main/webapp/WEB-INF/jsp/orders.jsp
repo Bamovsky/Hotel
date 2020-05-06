@@ -41,12 +41,13 @@
                         <c:if test="${not empty sessionScope.role}">
                             <c:if test="${sessionScope.role == 'client'}">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<c:url value="/controller?command=showBookings"></c:url>"> <fmt:message key="myBookings"/></a>
+                                    <a class="nav-link" href="<c:url value="/controller?command=showBookings"></c:url>">
+                                        <fmt:message key="myBookings"/></a>
                                 </li>
                             </c:if>
                             <c:if test="${sessionScope.role == 'manager'}">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<c:url value="/controller?command=showOrders"></c:url>"> <fmt:message key="myOrders"/></a>
+                                    <a class="nav-link" href="#"> <fmt:message key="myOrders"/></a>
                                 </li>
                             </c:if>
                         </c:if>
@@ -70,63 +71,48 @@
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item"
-                                   href="<c:url value="/controller?command=changeLocale&newLocale=ru&linkToForward=index"></c:url>"><fmt:message
+                                   href="<c:url value="/controller?command=changeLocale&newLocale=ru&linkToForward=orders"></c:url>"><fmt:message
                                         key="russian"/></a>
                                 <a class="dropdown-item"
-                                   href="<c:url value="/controller?command=changeLocale&newLocale=en&linkToForward=index"></c:url>"><fmt:message
+                                   href="<c:url value="/controller?command=changeLocale&newLocale=en&linkToForward=orders"></c:url>"><fmt:message
                                         key="english"/></a>
                             </div>
                         </li>
 
                     </ul>
                 </div>
-
             </nav>
         </div>
     </header>
 
     <div class="mainWrapper">
         <section class="container">
-            <div class="main col-sm-12">
-                <form class="form-row" action="<c:url value="/controller"></c:url>">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Почта пользователя</th>
+                    <th scope="col">Дата заезда</th>
+                    <th scope="col">Дата выезда</th>
+                    <th scope="col">Клас</th>
+                    <th scope="col">Кол-во мест</th>
+                    <th scope="col">Выбор апартаментов</th>
+                </tr>
+                </thead>
+                <tbody>
 
-                    <input type="text" name="command" value="makeOrder" style="display: none">
+                <c:forEach var="orders" items="${requestScope.orders}">
+                    <tr>
+                        <td><c:out value="${orders.getUserEmail()}"/></td>
+                        <td><c:out value="${orders.getArrivalDate()}"/></td>
+                        <td><c:out value="${orders.getDepartureDate()}"/></td>
+                        <td><c:out value="${orders.getNumberOfRooms()}"/></td>
+                        <td><c:out value="${orders.getClassInString()}"/></td>
+                        <td><a href="#">Выбор апартаментов</a></td>
+                    </tr>
+                </c:forEach>
 
-                    <div class="form-group col-sm-12 col-lg-2">
-                        <label for="exampleSelect1"><fmt:message key="class"/></label>
-                        <select name="apartmentClass" class="form-control" id="exampleSelect1">
-                            <option value="0"><fmt:message key="standard"/></option>
-                            <option value="1"><fmt:message key="improved"/></option>
-                            <option value="2"><fmt:message key="luxury"/></option>
-                        </select>
-                    </div>
-                    <div class="form-group col-sm-12 col-lg-3">
-                        <label for="example-date-input1"><fmt:message key="arrivalDate"/></label>
-                        <div>
-                            <input class="form-control" name="arrivalDate" type="date" id="example-date-input1">
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-12 col-lg-3">
-                        <label for="example-date-input2"><fmt:message key="departureDate"/></label>
-                        <div>
-                            <input class="form-control" name="departureDate" type="date" id="example-date-input2">
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-12 col-lg-2">
-                        <label for="exampleSelect2"><fmt:message key="quantityOfRooms"/></label>
-                        <select class="form-control" name="numberOfRooms" id="exampleSelect2">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="showPriceBtn btn btn-primary col-sm-12 col-lg-2"><fmt:message
-                            key="order"/></button>
-
-                </form>
-            </div>
+                </tbody>
+            </table>
         </section>
     </div>
 </div>
@@ -166,11 +152,6 @@
 
 
 <script src="<c:url value="js/libs.min.js"></c:url>"></script>
-<script src="<c:url value="js/index.js"></c:url>"></script>
-
-<c:if test="${not empty requestScope.approved}">
-    <script>$('#Modal').modal()</script>
-</c:if>
 
 </body>
 </html>
